@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>LLM QnA Evaluator</title>
+    <style>
+        body {
+            font-family: Arial;
+            padding: 2rem;
+            background-color: #f9f9f9;
+        }
+
+        textarea,
+        input,
+        button {
+            width: 100%;
+            margin-top: 1rem;
+        }
+
+        .result {
+            margin-top: 2rem;
+            padding: 1rem;
+            background: #fff;
+            border: 1px solid #ccc;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Ask a Question</h1>
+    <textarea id="question" rows="4" placeholder="Type your question here..."></textarea>
+    <button onclick="sendQuestion()">Submit</button>
+
+    <div class="result" id="responseBox" style="display: none;">
+        <p><strong>Answer:</strong> <span id="answer"></span></p>
+        <p><strong>Evaluation:</strong> <span id="evaluation"></span></p>
+        <p><strong>Timestamp:</strong> <span id="timestamp"></span></p>
+    </div>
+
+    <script>
+        async function sendQuestion() {
+            const question = document.getElementById("question").value;
+            const response = await fetch("http://127.0.0.1:5000/api/ask", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ question })
+            });
+            const data = await response.json();
+            document.getElementById("answer").innerText = data.answer;
+            document.getElementById("evaluation").innerText = data.evaluation ?? 'N/A';
+            document.getElementById("timestamp").innerText = data.timestamp;
+            document.getElementById("responseBox").style.display = "block";
+        }
+    </script>
+</body>
+
+</html>
